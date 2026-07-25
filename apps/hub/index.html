@@ -16,22 +16,83 @@
   </header>
 
   <main>
-    <ul>
-      <li>
-        <span class="emoji" aria-hidden="true">💼</span><a href="https://portfolio.rohansatram.com">portfolio</a>
-      </li>
-    </ul>
+    <section class="work-section">
+      <div class="section-title">💼 work</div>
+      <ul>
+        <li>
+          <a href="https://portfolio.rohansatram.com" target="_blank" rel="noopener noreferrer">portfolio</a>
+        </li>
+        <li>
+          <a href="https://github.com/rohansatram/resume/blob/master/resume.pdf" target="_blank" rel="noopener noreferrer">resume</a>
+        </li>
+        <li>
+          <a href="https://github.com/rohansatram" target="_blank" rel="noopener noreferrer">github</a>
+        </li>
+      </ul>
+    </section>
 
-    <section class="goodreads-section">
-      <div class="goodreads-heading">📖 currently reading</div>
-      <div id="goodreads-container">
-        <span style="color: var(--muted-color);">loading...</span>
+    <section class="personal-section">
+      <div class="section-title">👤 personal</div>
+      <ul>
+        <li>
+          <a href="/about">about</a>
+        </li>
+        <li>
+          <a href="/uses">uses</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="currently-section">
+      <div class="section-title">📚 currently</div>
+      <div class="currently-grid">
+        <!-- 1. Working Card -->
+        <div class="grid-card">
+          <div class="grid-card-label">💼 working</div>
+          <div class="grid-card-body">
+            <div class="item-title">Software Engineer</div>
+            <div class="item-subtitle">@ SpeakUp</div>
+          </div>
+        </div>
+
+        <!-- 2. Reading Card -->
+        <div class="grid-card">
+          <div class="grid-card-label">📖 reading</div>
+          <div id="goodreads-container" class="grid-card-body">
+            <span style="color: var(--muted-color);">loading...</span>
+          </div>
+        </div>
+
+        <!-- 3. Listening To Card (with Album Cover Thumbnail) -->
+        <div class="grid-card">
+          <div class="grid-card-label">🎵 listening</div>
+          <div class="grid-card-body grid-card-media">
+            <img src="/RAM.jpg" alt="Random Access Memories Album Cover" class="album-cover-thumbnail" />
+            <div>
+              <div class="item-title">Random Access Memories</div>
+              <div class="item-subtitle">by Daft Punk</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Learning Card -->
+        <div class="grid-card">
+          <div class="grid-card-label">🎓 learning</div>
+          <div class="grid-card-body">
+            <div class="item-title">CI / CD (GitHub Actions)</div>
+            <div class="item-subtitle"><a href="https://www.boot.dev/u/jaggedstupid17" target="_blank" rel="noopener noreferrer">on boot.dev</a></div>
+          </div>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
-    <span><a href="https://github.com/rohansatram" target="_blank" rel="noopener noreferrer">github</a></span>
+    <a href="mailto:satram.rohan@gmail.com">email</a>
+    <span class="footer-divider">·</span>
+    <a href="https://www.linkedin.com/in/rohansatram/" target="_blank" rel="noopener noreferrer">linkedin</a>
+    <span class="footer-divider">·</span>
+    <a href="https://x.com/rohansatram" target="_blank" rel="noopener noreferrer">twitter</a>
   </footer>
 
   <script type="module">
@@ -59,7 +120,7 @@
             }
 
             return `
-              <div class="book-card" style="margin-bottom: 0.75rem;">
+              <div style="margin-bottom: 0.5rem;">
                 <div class="book-title">${bookTitle}</div>
                 ${authorName ? `<div class="book-author">by ${authorName}</div>` : ""}
               </div>

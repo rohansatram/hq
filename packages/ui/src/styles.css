@@ -16,8 +16,8 @@ body {
   color: var(--text-color);
   font-family: var(--font-stack);
   
-  max-width: 520px;
-  margin: 100px auto 40px auto;
+  max-width: 640px;
+  margin: 80px auto 40px auto;
   padding: 0 24px;
   line-height: 2;
 }
@@ -39,6 +39,18 @@ h1 {
   font-size: 0.85rem;
   color: var(--muted-color);
   margin: 0;
+}
+
+section {
+  margin-top: 2rem;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 0.95rem;
+  color: var(--text-color);
+  margin-bottom: 0.75rem;
 }
 
 ul {
@@ -70,38 +82,102 @@ a:hover {
   opacity: 0.85;
 }
 
-.goodreads-section {
-  margin-top: 2.5rem;
-  border-top: 1px dashed var(--border-color);
-  padding-top: 1.5rem;
+/* 2x2 Grid Layout for Currently Section */
+.currently-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-.goodreads-heading {
-  font-size: 0.9rem;
+@media (max-width: 600px) {
+  .currently-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.grid-card {
+  border: 1px dashed var(--border-color);
+  padding: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 120px;
+}
+
+.grid-card-label {
+  font-size: 0.8rem;
   color: var(--muted-color);
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   text-transform: lowercase;
 }
 
-.book-card {
-  font-size: 0.9rem;
-  line-height: 1.6;
+.grid-card-body {
+  flex-grow: 1;
 }
 
-.book-title {
+.grid-card-media {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.album-cover-thumbnail {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border: 1px dashed var(--border-color);
+  background-color: rgba(0, 0, 0, 0.03);
+  flex-shrink: 0;
+}
+
+.book-title,
+.item-title {
   font-weight: bold;
 }
 
-.book-author {
+.book-author,
+.item-subtitle {
   color: var(--muted-color);
 }
 
 footer {
-  margin-top: 3.5rem;
-  border-top: 1px dashed var(--border-color);
-  padding-top: 1.5rem;
+  margin-top: 2.5rem;
   font-size: 0.85rem;
   color: var(--muted-color);
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
+  gap: 0.5rem;
+}
+
+.footer-divider {
+  color: var(--muted-color);
+  user-select: none;
+}
+
+/* Uses Page Key-Value List Styling */
+.uses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.uses-item {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.35;
+}
+
+.uses-label {
+  font-size: 0.78rem;
+  color: var(--muted-color);
+  text-transform: lowercase;
+  letter-spacing: 0.03em;
+}
+
+.uses-value {
+  font-size: 0.9rem;
+  color: var(--text-color);
 }
