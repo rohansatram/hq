@@ -1,0 +1,17 @@
+{
+  "name": "hq",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@10.11.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "build:portfolio": "pnpm --filter portfolio build",
+    "dev:portfolio": "pnpm --filter portfolio dev",
+    "build:hub": "pnpm --filter hub build",
+    "dev:hub": "pnpm --filter hub dev"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.0"
+  }
+}

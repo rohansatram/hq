@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rohan satram / index</title>
+  <meta name="description" content="Personal directory & index for Rohan Satram.">
+  <script type="module">
+    import "@hq/ui/styles.css";
+  </script>
+</head>
+<body>
+
+  <header>
+    <h1>rohan satram / index</h1>
+  </header>
+
+  <main>
+    <ul>
+      <li>
+        <span class="emoji" aria-hidden="true">💼</span><a href="https://portfolio.rohansatram.com">portfolio</a>
+      </li>
+    </ul>
+
+    <section class="goodreads-section">
+      <div class="goodreads-heading">📖 currently reading</div>
+      <div id="goodreads-container">
+        <span style="color: var(--muted-color);">loading...</span>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span><a href="https://github.com/rohansatram" target="_blank" rel="noopener noreferrer">github</a></span>
+  </footer>
+
+  <script type="module">
+    async function loadCurrentlyReadingBook() {
+      const goodreadsContainer = document.getElementById("goodreads-container");
+      const goodreadsUserId = "151868420";
+      const rssUrl = encodeURIComponent(`https://www.goodreads.com/review/list_rss/${goodreadsUserId}?shelf=currently-reading`);
+      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
+
+      try {
+        const fetchResponse = await fetch(apiUrl);
+        const rssData = await fetchResponse.json();
+
+        if (rssData.status === "ok" && rssData.items && rssData.items.length > 0) {
+          const booksHtmlList = rssData.items.map((bookItem) => {
+            const bookTitle = bookItem.title || "";
+            
+            // Author extraction from description
+            let authorName = bookItem.author || "";
+            if (!authorName && bookItem.description) {
+              const authorMatch = bookItem.description.match(/author:\s*([^<]+)/i);
+              if (authorMatch) {
+                authorName = authorMatch[1].trim();
+              }
+            }
+
+            return `
+              <div class="book-card" style="margin-bottom: 0.75rem;">
+                <div class="book-title">${bookTitle}</div>
+                ${authorName ? `<div class="book-author">by ${authorName}</div>` : ""}
+              </div>
+            `;
+          }).join("");
+
+          goodreadsContainer.innerHTML = booksHtmlList;
+        } else {
+          goodreadsContainer.innerHTML = `<span style="color: var(--muted-color);">none currently</span>`;
+        }
+      } catch (errorMessage) {
+        goodreadsContainer.innerHTML = `<span style="color: var(--muted-color);">unable to load book</span>`;
+      }
+    }
+
+    loadCurrentlyReadingBook();
+  </script>
+
+</body>
+</html>

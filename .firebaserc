@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "rohansatram-770ee"
+  },
+  "targets": {
+    "rohansatram-770ee": {
+      "hosting": {
+        "hub": [
+          "rohansatram-770ee"
+        ],
+        "portfolio": [
+          "portfolio-rohansatram"
+        ]
+      }
+    }
+  }
+}
