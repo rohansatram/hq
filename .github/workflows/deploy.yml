@@ -24,11 +24,15 @@ jobs:
             hub:
               - 'apps/hub/**'
               - 'packages/ui/**'
+              - 'firebase.json'
+              - '.firebaserc'
               - 'package.json'
               - 'pnpm-workspace.yaml'
             portfolio:
               - 'apps/portfolio/**'
               - 'packages/ui/**'
+              - 'firebase.json'
+              - '.firebaserc'
               - 'package.json'
               - 'pnpm-workspace.yaml'
 
