@@ -1,0 +1,97 @@
+name: Deploy to Firebase Hosting
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  detect-changes:
+    name: Detect Changed Apps
+    runs-on: ubuntu-latest
+    outputs:
+      hub: ${{ steps.filter.outputs.hub }}
+      portfolio: ${{ steps.filter.outputs.portfolio }}
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Inspect Modified Paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            hub:
+              - 'apps/hub/**'
+              - 'packages/ui/**'
+              - 'package.json'
+              - 'pnpm-workspace.yaml'
+            portfolio:
+              - 'apps/portfolio/**'
+              - 'packages/ui/**'
+              - 'package.json'
+              - 'pnpm-workspace.yaml'
+
+  deploy-hub:
+    name: Deploy Hub (rohansatram.com)
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.hub == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm Package Manager
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Workspace Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Hub Application
+        run: pnpm build:hub
+
+      - name: Deploy Hub to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          target: hub
+          channelId: live
+
+  deploy-portfolio:
+    name: Deploy Portfolio (portfolio.rohansatram.com)
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.portfolio == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm Package Manager
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install Workspace Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Portfolio Application
+        run: pnpm build:portfolio
+
+      - name: Deploy Portfolio to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          target: portfolio
+          channelId: live

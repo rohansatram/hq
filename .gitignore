@@ -1,0 +1,19 @@
+# Node & dependencies
+node_modules/
+.pnpm-store/
+
+# Turbo cache
+.turbo/
+
+# Build outputs
+dist/
+build/
+.out/
+
+# Environment & local secrets
+.env*
+!.env.example
+
+# OS clutter
+.DS_Store
+*.log

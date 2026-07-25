@@ -1,0 +1,107 @@
+:root {
+  /* Warm Cream Paper Aesthetic */
+  --bg-color: #f7f4eb;
+  --text-color: #2b2b2b;
+  --link-hover: #000000;
+  --border-color: #d1cdbf;
+  --muted-color: #8c887b;
+  --font-stack: "Courier New", Courier, ui-monospace, "SF Mono", monospace;
+}
+
+body {
+  /* Warm cream background with subtle noise texture */
+  background-color: var(--bg-color);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  
+  color: var(--text-color);
+  font-family: var(--font-stack);
+  
+  max-width: 520px;
+  margin: 100px auto 40px auto;
+  padding: 0 24px;
+  line-height: 2;
+}
+
+header {
+  margin-bottom: 2rem;
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 1rem;
+}
+
+h1 {
+  font-size: 1.1rem;
+  font-weight: normal;
+  margin: 0 0 0.25rem 0;
+  letter-spacing: 0.05em;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--muted-color);
+  margin: 0;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  margin-bottom: 0.75rem;
+}
+
+a {
+  color: var(--text-color);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+a:hover {
+  color: var(--link-hover);
+  text-decoration-color: var(--link-hover);
+}
+
+.emoji {
+  display: inline-block;
+  width: 2rem;
+  opacity: 0.85;
+}
+
+.goodreads-section {
+  margin-top: 2.5rem;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 1.5rem;
+}
+
+.goodreads-heading {
+  font-size: 0.9rem;
+  color: var(--muted-color);
+  margin-bottom: 0.75rem;
+  text-transform: lowercase;
+}
+
+.book-card {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.book-title {
+  font-weight: bold;
+}
+
+.book-author {
+  color: var(--muted-color);
+}
+
+footer {
+  margin-top: 3.5rem;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--muted-color);
+  display: flex;
+  justify-content: flex-end;
+}
