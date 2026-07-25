@@ -3,21 +3,17 @@
     {
       "target": "hub",
       "public": "apps/hub/dist",
+      "cleanUrls": true,
       "ignore": [
         "firebase.json",
         "**/.*",
         "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
       ]
     },
     {
       "target": "portfolio",
       "public": "apps/portfolio/dist",
+      "cleanUrls": true,
       "ignore": [
         "firebase.json",
         "**/.*",
