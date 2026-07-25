@@ -28,6 +28,7 @@ jobs:
               - '.firebaserc'
               - 'package.json'
               - 'pnpm-workspace.yaml'
+              - '.github/workflows/**'
             portfolio:
               - 'apps/portfolio/**'
               - 'packages/ui/**'
@@ -35,6 +36,7 @@ jobs:
               - '.firebaserc'
               - 'package.json'
               - 'pnpm-workspace.yaml'
+              - '.github/workflows/**'
 
   deploy-hub:
     name: Deploy Hub (rohansatram.com)
