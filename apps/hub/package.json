@@ -12,6 +12,14 @@
     "vite": "^6.2.0"
   },
   "dependencies": {
-    "@hq/ui": "workspace:*"
+    "@hq/ui": "workspace:*",
+    "@tiptap/core": "^3.32.0",
+    "@tiptap/extension-bubble-menu": "^3.32.0",
+    "@tiptap/extension-link": "^3.32.0",
+    "@tiptap/extension-placeholder": "^3.32.0",
+    "@tiptap/starter-kit": "^3.32.0",
+    "firebase": "^13.1.0",
+    "marked": "^18.1.1",
+    "tiptap-markdown": "^0.9.0"
   }
 }

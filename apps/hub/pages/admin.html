@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rohan satram / admin</title>
+  <meta name="description" content="Admin management page.">
+  <script type="module">
+    import "@hq/ui/styles.css";
+  </script>
+</head>
+
+<body>
+  <header>
+    <div class="admin-header-row">
+      <h1>rohan satram / admin</h1>
+      <div id="auth-controls" hidden>
+        <button type="button" id="sign-out-button" class="btn-subtle">sign out</button>
+      </div>
+    </div>
+    <p id="nav-index" class="subtitle"><a href="/">← index</a></p>
+    <p id="nav-posts" class="subtitle" hidden><a href="#" id="back-to-posts-button">← posts</a></p>
+  </header>
+
+  <main>
+    <section id="sign-in" class="center">
+      <button type="button" id="sign-in-button">sign in</button>
+    </section>
+
+    <section id="unauthorized" class="center" hidden>
+      <h2>bruh</h2>
+      <p class="muted">you are not him.</p>
+      <button type="button" id="unauthorized-sign-out-button">sign out</button>
+    </section>
+
+    <div id="admin-panel" hidden>
+      <!-- View 1: Posts Index -->
+      <section id="posts-view">
+        <div class="posts-header">
+          <div class="section-title">📝 posts (<span id="posts-count">0</span>)</div>
+          <button type="button" id="new-post-button">+ new post</button>
+        </div>
+        <div id="posts-loading" class="muted">loading posts...</div>
+        <div id="posts-empty" class="muted" hidden>no posts yet. create your first one!</div>
+        <ul id="posts-list" class="posts-list"></ul>
+
+        <div id="posts-pagination" class="pagination-bar" hidden>
+          <button type="button" id="prev-page-button" class="pagination-btn">← prev</button>
+          <span id="pagination-info" class="pagination-info muted">page 1 of 1</span>
+          <button type="button" id="next-page-button" class="pagination-btn">next →</button>
+        </div>
+      </section>
+
+      <!-- View 2: Post Editor -->
+      <section id="editor-view" hidden>
+        <div class="editor-field">
+          <input type="text" id="post-title" class="editor-title-input" placeholder="post title..." autocomplete="off" />
+        </div>
+
+        <div class="editor-slug-row muted">
+          <span>slug: /til/</span><span id="post-slug-preview"></span>
+        </div>
+
+        <!-- Tiptap Bubble Menu -->
+        <div id="bubble-menu" class="bubble-menu">
+          <div id="bubble-menu-formatting" class="bubble-menu-row">
+            <button type="button" data-action="bold" class="menu-btn" title="Bold">b</button>
+            <button type="button" data-action="italic" class="menu-btn" title="Italic">i</button>
+            <button type="button" data-action="heading" data-level="2" class="menu-btn" title="Heading 2">h2</button>
+            <button type="button" data-action="blockquote" class="menu-btn" title="Quote">quote</button>
+            <button type="button" data-action="code" class="menu-btn" title="Inline Code">code</button>
+            <button type="button" data-action="link" class="menu-btn" title="Link">link</button>
+          </div>
+          <div id="bubble-menu-link-box" class="bubble-menu-link-box" hidden>
+            <input type="text" id="bubble-link-input" class="bubble-link-input" placeholder="url... (e.g. https://)" autocomplete="off" />
+            <button type="button" id="bubble-link-save-btn" class="menu-btn">apply</button>
+            <button type="button" id="bubble-link-unlink-btn" class="menu-btn btn-danger" hidden>remove</button>
+            <button type="button" id="bubble-link-cancel-btn" class="menu-btn">✕</button>
+          </div>
+        </div>
+
+        <!-- Tiptap Editor Canvas -->
+        <div id="tiptap-editor" class="editor-canvas"></div>
+
+        <!-- Editor Actions -->
+        <div class="editor-actions">
+          <div class="editor-status-controls">
+            <span id="editor-save-status" class="editor-status-text muted"></span>
+          </div>
+          <div class="editor-buttons">
+            <button type="button" id="delete-post-button" class="btn-danger" hidden>delete</button>
+            <button type="button" id="save-draft-button">save draft</button>
+            <button type="button" id="publish-post-button">publish</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Custom Confirmation Dialog -->
+  <dialog id="confirm-dialog" class="confirm-dialog">
+    <div class="confirm-dialog-content">
+      <div id="confirm-title" class="confirm-title">confirm action</div>
+      <p id="confirm-message" class="confirm-message muted">are you sure?</p>
+      <div class="confirm-actions">
+        <button type="button" id="confirm-cancel-btn">cancel</button>
+        <button type="button" id="confirm-ok-btn">confirm</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>
