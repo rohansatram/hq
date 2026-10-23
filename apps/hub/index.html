@@ -97,43 +97,59 @@
   </footer>
 
   <script type="module">
+    const READING_ENDPOINT = "https://goodreads-proxy.satram-rohan.workers.dev";
+
+    function showStatus(container, text) {
+      const span = document.createElement("span");
+      span.style.color = "var(--muted-color)";
+      span.textContent = text;
+      container.replaceChildren(span);
+    }
+
+    function renderBook(item) {
+      const text = (tag) => item.querySelector(tag)?.textContent?.trim() ?? "";
+
+      const wrapper = document.createElement("div");
+      wrapper.style.marginBottom = "0.5rem";
+
+      const title = document.createElement("div");
+      title.className = "book-title";
+      title.textContent = text("title");
+      wrapper.append(title);
+
+      const author = text("author_name");
+      if (author) {
+        const byline = document.createElement("div");
+        byline.className = "book-author";
+        byline.textContent = `by ${author}`;
+        wrapper.append(byline);
+      }
+
+      return wrapper;
+    }
+
     async function loadCurrentlyReadingBook() {
-      const goodreadsContainer = document.getElementById("goodreads-container");
-      const goodreadsUserId = "151868420";
-      const rssUrl = encodeURIComponent(`https://www.goodreads.com/review/list_rss/${goodreadsUserId}?shelf=currently-reading`);
-      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${rssUrl}`;
+      const container = document.getElementById("goodreads-container");
 
       try {
-        const fetchResponse = await fetch(apiUrl);
-        const rssData = await fetchResponse.json();
+        const response = await fetch(READING_ENDPOINT);
+        if (!response.ok) throw new Error(`proxy responded ${response.status}`);
 
-        if (rssData.status === "ok" && rssData.items && rssData.items.length > 0) {
-          const booksHtmlList = rssData.items.map((bookItem) => {
-            const bookTitle = bookItem.title || "";
-            
-            // Author extraction from description
-            let authorName = bookItem.author || "";
-            if (!authorName && bookItem.description) {
-              const authorMatch = bookItem.description.match(/author:\s*([^<]+)/i);
-              if (authorMatch) {
-                authorName = authorMatch[1].trim();
-              }
-            }
+        const xml = await response.text();
+        const doc = new DOMParser().parseFromString(xml, "application/xml");
 
-            return `
-              <div style="margin-bottom: 0.5rem;">
-                <div class="book-title">${bookTitle}</div>
-                ${authorName ? `<div class="book-author">by ${authorName}</div>` : ""}
-              </div>
-            `;
-          }).join("");
+        if (doc.querySelector("parsererror")) throw new Error("invalid XML");
 
-          goodreadsContainer.innerHTML = booksHtmlList;
-        } else {
-          goodreadsContainer.innerHTML = `<span style="color: var(--muted-color);">none currently</span>`;
+        const books = Array.from(doc.querySelectorAll("item"));
+        if (books.length === 0) {
+          showStatus(container, "none currently");
+          return;
         }
-      } catch (errorMessage) {
-        goodreadsContainer.innerHTML = `<span style="color: var(--muted-color);">unable to load book</span>`;
+
+        container.replaceChildren(...books.map(renderBook));
+      } catch (error) {
+        console.error("currently reading:", error);
+        showStatus(container, "unable to load book");
       }
     }
 
