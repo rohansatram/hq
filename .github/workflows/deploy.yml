@@ -12,6 +12,7 @@ jobs:
     outputs:
       hub: ${{ steps.filter.outputs.hub }}
       portfolio: ${{ steps.filter.outputs.portfolio }}
+      rules: ${{ steps.filter.outputs.rules }}
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
@@ -37,6 +38,9 @@ jobs:
               - 'package.json'
               - 'pnpm-workspace.yaml'
               - '.github/workflows/**'
+            rules:
+              - 'firestore.rules'
+              - 'firebase.json'
 
   deploy-hub:
     name: Deploy Hub (rohansatram.com)
@@ -69,6 +73,30 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           target: hub
           channelId: live
+
+  deploy-rules:
+    name: Deploy Firestore Rules
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.rules == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node Environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Write Service Account Key
+        env:
+          SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: printf '%s' "$SA_JSON" > "$RUNNER_TEMP/sa.json"
+
+      - name: Deploy Firestore Rules
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/sa.json
+        run: npx --yes firebase-tools@13.31.2 deploy --only firestore:rules --project rohansatram-770ee --non-interactive
 
   deploy-portfolio:
     name: Deploy Portfolio (portfolio.rohansatram.com)

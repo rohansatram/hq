@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rohan satram / til</title>
+  <meta name="description" content="Today I Learned notes & writings by Rohan Satram.">
+  <script type="module">
+    import "@hq/ui/styles.css";
+  </script>
+</head>
+<body>
+
+  <header>
+    <h1>rohan satram / til</h1>
+    <p id="til-nav-index" class="subtitle"><a href="/">← index</a></p>
+    <p id="til-nav-til" class="subtitle" hidden><a href="/til" id="back-to-til-button">← til</a></p>
+  </header>
+
+  <main>
+    <!-- View 1: Posts Archive Index -->
+    <section id="til-index-view">
+      <div id="til-loading" class="muted">loading posts...</div>
+      <div id="til-empty" class="muted" hidden>no posts published yet.</div>
+      <ul id="til-list" class="til-list"></ul>
+
+      <div id="til-pagination" class="pagination-bar" hidden>
+        <button type="button" id="til-prev-button" class="pagination-btn">← prev</button>
+        <span id="til-pagination-info" class="pagination-info muted">page 1 of 1</span>
+        <button type="button" id="til-next-button" class="pagination-btn">next →</button>
+      </div>
+    </section>
+
+    <!-- View 2: Single Post View -->
+    <section id="til-post-view" hidden>
+      <h2 id="article-title" class="article-title"></h2>
+      <div id="article-date" class="article-date muted"></div>
+      <div id="article-content" class="article-content"></div>
+    </section>
+  </main>
+
+  <footer>
+    <a href="mailto:satram.rohan@gmail.com">email</a>
+    <span class="footer-divider">·</span>
+    <a href="https://www.linkedin.com/in/rohansatram/" target="_blank" rel="noopener noreferrer">linkedin</a>
+    <span class="footer-divider">·</span>
+    <a href="https://x.com/rohansatram" target="_blank" rel="noopener noreferrer">twitter</a>
+  </footer>
+
+  <script type="module" src="./til.js"></script>
+</body>
+</html>

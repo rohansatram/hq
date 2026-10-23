@@ -1,0 +1,27 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // The only account allowed to write. Replace the placeholder with the
+    // uid from `user.uid` after signing in once at /admin.
+    function isOwner() {
+      return request.auth != null
+          && request.auth.uid == "EyGCqsjj3jgKFsCjzLbU36Eo4rT2";
+    }
+
+    match /posts/{postId} {
+      // Public visitors only see published posts. Firestore is not a filter,
+      // so any public query must constrain itself with
+      // where("published", "==", true). The owner bypasses that constraint.
+      allow read: if isOwner() || resource.data.published == true;
+
+      allow create, update, delete: if isOwner();
+    }
+
+    // Everything else is closed, including any collection added later.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
