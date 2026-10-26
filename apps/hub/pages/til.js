@@ -1,6 +1,8 @@
-import { db } from "./firebase.js";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { marked } from "marked";
+
+const FIRESTORE_QUERY_ENDPOINT =
+  "https://firestore.googleapis.com/v1/projects/rohansatram-770ee/databases/(default)/documents:runQuery";
+const CACHE_KEY = "til_published_posts";
 
 // DOM Elements - Navigation
 const tilNavIndex = document.getElementById("til-nav-index");
@@ -34,11 +36,54 @@ let publishedPosts = [];
 function formatDate(timestamp) {
   if (!timestamp) return "";
   const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  if (isNaN(date.getTime())) return "";
   return date.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
+}
+
+function parseFirestoreValue(valueObj) {
+  if (!valueObj) return null;
+  if ("stringValue" in valueObj) return valueObj.stringValue;
+  if ("booleanValue" in valueObj) return valueObj.booleanValue;
+  if ("integerValue" in valueObj) return parseInt(valueObj.integerValue, 10);
+  if ("doubleValue" in valueObj) return parseFloat(valueObj.doubleValue);
+  if ("timestampValue" in valueObj) return valueObj.timestampValue;
+  if ("nullValue" in valueObj) return null;
+  if ("mapValue" in valueObj) {
+    const fields = valueObj.mapValue.fields || {};
+    const result = {};
+    for (const [k, v] of Object.entries(fields)) {
+      result[k] = parseFirestoreValue(v);
+    }
+    return result;
+  }
+  if ("arrayValue" in valueObj) {
+    const values = valueObj.arrayValue.values || [];
+    return values.map(parseFirestoreValue);
+  }
+  return null;
+}
+
+function parseFirestoreDoc(doc) {
+  const id = doc.name ? doc.name.split("/").pop() : "";
+  const data = {};
+  if (doc.fields) {
+    for (const [key, val] of Object.entries(doc.fields)) {
+      data[key] = parseFirestoreValue(val);
+    }
+  }
+  return { id, ...data };
+}
+
+function getTimestampMillis(val) {
+  if (!val) return 0;
+  if (typeof val === "string") return new Date(val).getTime() || 0;
+  if (typeof val.toMillis === "function") return val.toMillis();
+  if (typeof val.getTime === "function") return val.getTime();
+  return 0;
 }
 
 function escapeHtml(str) {
@@ -141,38 +186,78 @@ function checkRoute() {
   showIndexView();
 }
 
-// Fetch published posts from Firestore
+// Fetch published posts from Firestore via REST API
 async function loadPublishedPosts() {
-  tilLoading.hidden = false;
-  tilEmpty.hidden = true;
-  tilList.innerHTML = "";
-  tilPagination.hidden = true;
+  const cached = sessionStorage.getItem(CACHE_KEY);
+  if (cached) {
+    try {
+      publishedPosts = JSON.parse(cached);
+      tilLoading.hidden = true;
+      renderPosts();
+      checkRoute();
+    } catch {
+      // Ignore parse errors from stale/corrupt cache
+    }
+  }
+
+  if (publishedPosts.length === 0) {
+    tilLoading.hidden = false;
+    tilEmpty.hidden = true;
+    tilList.innerHTML = "";
+    tilPagination.hidden = true;
+  }
 
   try {
-    const q = query(
-      collection(db, "posts"),
-      where("published", "==", true)
-    );
+    const res = await fetch(FIRESTORE_QUERY_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        structuredQuery: {
+          from: [{ collectionId: "posts" }],
+          where: {
+            fieldFilter: {
+              field: { fieldPath: "published" },
+              op: "EQUAL",
+              value: { booleanValue: true },
+            },
+          },
+        },
+      }),
+    });
 
-    const snapshot = await getDocs(q);
-    publishedPosts = snapshot.docs.map((docSnap) => ({
-      id: docSnap.id,
-      ...docSnap.data(),
-    }));
+    if (!res.ok) {
+      throw new Error(`Firestore request failed with status ${res.status}`);
+    }
 
-    // Client-side sort by createdAt descending
-    publishedPosts.sort((a, b) => {
-      const timeA = a.createdAt?.toMillis?.() || 0;
-      const timeB = b.createdAt?.toMillis?.() || 0;
+    const rawData = await res.json();
+    const fetchedPosts = rawData
+      .filter((item) => Boolean(item.document))
+      .map((item) => parseFirestoreDoc(item.document));
+
+    // Sort by createdAt descending
+    fetchedPosts.sort((a, b) => {
+      const timeA = getTimestampMillis(a.createdAt);
+      const timeB = getTimestampMillis(b.createdAt);
       return timeB - timeA;
     });
+
+    publishedPosts = fetchedPosts;
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify(publishedPosts));
+    } catch {
+      // Safe to ignore quota exceeded or private mode restrictions
+    }
 
     tilLoading.hidden = true;
     renderPosts();
     checkRoute();
   } catch (error) {
     console.error("Failed to load TIL posts:", error);
-    tilLoading.textContent = "unable to load posts.";
+    if (publishedPosts.length === 0) {
+      tilLoading.textContent = "unable to load posts.";
+    }
   }
 }
 
